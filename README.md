@@ -16,7 +16,7 @@ Bubble & Fresh is a laundry pickup booking app. The React/Vite client provides t
    node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
    ```
 
-   Put the generated value in `server\.env` as `JWT_SECRET`. Set `MONGO_URI` if MongoDB is not available at the local default. Do not commit `server\.env`.
+   Put the generated value in `server\.env` as `JWT_SECRET`. Set `MONGO_URI` if MongoDB is not available at the local default. Do not commit `server\.env`. The laundry API listens on port `5001` by default so it does not conflict with other local apps.
 
 2. Start the API in a terminal:
 
@@ -36,7 +36,7 @@ Bubble & Fresh is a laundry pickup booking app. The React/Vite client provides t
 
    Open the Vite URL shown in the terminal (normally `http://localhost:5173`).
 
-The frontend API URL defaults to `http://localhost:5000/api`; set `VITE_API_URL` in the client environment to use a different API URL. Set `CLIENT_URL` in the server environment to the frontend origin when it differs from the local default.
+During local development, Vite proxies `/api` requests to `http://127.0.0.1:5001`. Set `VITE_API_URL` in the client environment when deploying the frontend separately from the API, and set `CLIENT_URL` in the server environment to the frontend origin for production.
 
 ## Authentication and account features
 
