@@ -9,7 +9,7 @@ Bubble & Fresh is a laundry pickup booking app. The React/Vite client provides t
 
 ## Run locally
 
-1. Configure the API:
+1. Configure MongoDB and the API:
 
    ```powershell
    Copy-Item server\.env.example server\.env
@@ -47,3 +47,15 @@ During local development, Vite proxies `/api` requests to `http://127.0.0.1:5001
 - Password reset email and Google sign-in are not enabled because this project does not have an email-delivery or OAuth provider configured. The password help page explains this rather than pretending to send a reset email.
 
 Existing bookings created before account ownership was added do not have an associated user and therefore are not shown in customer dashboards.
+
+## Deploy from GitHub
+
+The GitHub repository stores the code; it does not run the API or database. A practical hosted setup is one Render web service for the frontend and API, with MongoDB Atlas as the database.
+
+1. Create a MongoDB Atlas cluster. Add a database user, allow connections from Render (Atlas Network Access `0.0.0.0/0`, or Render's published outbound IPs on a paid plan), and copy the cluster connection string. Replace its password placeholder and include the database name `laundry_db`.
+2. In Render, choose **New → Blueprint**, connect `arjungahane/25070521135-CA-03`, and deploy the repository's `render.yaml`.
+3. When Render requests `MONGO_URI`, paste the Atlas connection string. Render generates `JWT_SECRET` automatically; leave it private.
+4. Wait for the deployment health check to pass, then open the Render service URL. The Express service serves the built React app and `/api` from the same origin. Direct links and browser refresh work on application pages.
+5. To publish later changes, push them to the connected GitHub branch; Render automatically builds and deploys the new commit.
+
+The free Render service may sleep when idle and take a short time to wake up. MongoDB Atlas and Render may have separate free-tier limits. For a live production business, use paid hosting, restrict the Atlas network access list, and configure a domain and backup plan.

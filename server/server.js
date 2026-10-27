@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/laundry_db';
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+const CLIENT_BUILD = path.resolve(__dirname, '../client/dist');
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
   throw new Error('JWT_SECRET must be configured with at least 32 characters.');
@@ -25,8 +27,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.use((req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({ message: 'Requested route not found' });
+});
+
+app.use(express.static(CLIENT_BUILD));
+
+app.get('*', (req, res, next) => {
+  res.sendFile(path.join(CLIENT_BUILD, 'index.html'), (error) => {
+    if (error) next(error);
+  });
 });
 
 app.use((error, req, res, next) => {
